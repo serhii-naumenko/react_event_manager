@@ -1,0 +1,11 @@
+@import './index.scss';
+@import "./reset.scss";
+
+html {
+  scroll-behavior: smooth;
+
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  color: $color-of-text;
+} 

@@ -1,0 +1,52 @@
+@import '../../styles/index.scss';
+
+.CorrectWindow {
+  &__window-add {
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+    margin-bottom: 15px;
+
+    width: 172px;
+    height: 125px;
+  }
+  
+  &__window-section {
+    display: flex;
+    flex-grow: 1;
+    align-items: center;
+    background-color: $main-background;
+    
+    &:first-child {
+      border: 2px solid #CECECE;
+      border-radius: 10px 10px 0px 0px;
+    }
+
+    &:last-child {
+      box-sizing: content-box;
+      background-color: #FF4A4A;
+      border-color: #FF4A4A;
+      border-radius: 0px 0px 10px 10px;
+    }
+
+    &-middle {
+      border: 2px solid #CECECE;
+      border-top: transparent;
+    }
+  }
+
+  &__correct-image {
+    margin-left: 13px;
+    margin-right: 13px;
+    width: 18px;
+    height: 20px;
+  }
+
+  &__edit {
+    @extend %text-correct-window;
+
+    &-delete {
+      color: white;
+    }
+  }
+}
