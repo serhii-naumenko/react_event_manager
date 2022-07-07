@@ -1,1 +1,0 @@
-{"version":3,"sources":["webpack://src/App.scss","webpack://src/components/EventList/EventList.scss"],"names":[],"mappings":"AAAA,KACE,cAAe,CCDjB,WACE,SAAU,CACV,eAAiB","file":"main.9a8e405c.chunk.css","sourcesContent":[".App {\n  font-size: 25px;\n}\n",".EventList {\r\n  color: red;\r\n  font-weight: bold;\r\n}"]}
