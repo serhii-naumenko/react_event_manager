@@ -1,35 +1,44 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import './CorrectWindow.scss';
 import pencil from '../../images/pencil.svg';
 import cloud from '../../images/cloud.svg';
 import can from '../../images/can.svg';
-import { changeIsPublishedOccasion, selectors } from '../../redux/reduser';
+import {
+  changeIsPublishedOccasion,
+  chooseIdOccasion,
+  getVisibleOccasions,
+  selectors,
+  updateOcasions,
+} from '../../redux/reduser';
 
 export const CorrectWindow: React.FC = () => {
   const idOfEvent = useSelector(selectors.getChosenId);
-  const loadedEvents = useSelector(selectors.loadEvents);
+  const loadedEvents = useSelector(selectors.loadedOccasions);
+  const choosenToPublish = useSelector(selectors.getChosenOccasionsPublished);
+  const chosenEvent = useSelector(selectors.getChosenOccasion);
+  const visibleEvents = useSelector(selectors.getVisibleOccasons);
   const dispatch = useDispatch();
-  const [eventPublished, setEventPublished] = useState(false);
 
   const handlerChangePublished = useCallback(() => {
     const chosenIdEvent = idOfEvent;
     const allEvents = loadedEvents;
-    const chosenEvent = allEvents.find((oneEvent) => {
-      return oneEvent.id === chosenIdEvent;
-    });
+    const exactEvent = chosenEvent;
+    const newEventsToPrint = visibleEvents.filter((visEvent) => visEvent.id !== chosenIdEvent);
 
-    if (chosenEvent?.isPublished) {
-      setEventPublished(true);
-    } else {
-      setEventPublished(false);
+    if ('isPublished' in exactEvent) {
+      if (exactEvent.isPublished) {
+        allEvents[chosenIdEvent].isPublished = false;
+      } else {
+        allEvents[chosenIdEvent].isPublished = true;
+      }
     }
 
-    // eslint-disable-next-line no-console
-    console.log(eventPublished, chosenIdEvent);
-
+    dispatch(getVisibleOccasions(newEventsToPrint));
+    dispatch(updateOcasions(allEvents));
     dispatch(changeIsPublishedOccasion(chosenIdEvent));
-  }, [idOfEvent, loadedEvents, eventPublished]);
+    dispatch(chooseIdOccasion(-1));
+  }, [idOfEvent, loadedEvents, chosenEvent]);
 
   return (
     <div className="CorrectWindow__window-add">
@@ -50,7 +59,7 @@ export const CorrectWindow: React.FC = () => {
         type="button"
         className="CorrectWindow__window-section
         CorrectWindow__window-section-middle"
-        onClick={() => handlerChangePublished()}
+        onClick={handlerChangePublished}
       >
         <img
           src={cloud}
@@ -58,7 +67,7 @@ export const CorrectWindow: React.FC = () => {
           className="CorrectWindow__correct-image"
         />
         <p className="CorrectWindow__edit">
-          {eventPublished ? 'Publish' : 'Unpublish'}
+          {choosenToPublish ? 'Unpublish' : 'Publish'}
         </p>
       </button>
       <button

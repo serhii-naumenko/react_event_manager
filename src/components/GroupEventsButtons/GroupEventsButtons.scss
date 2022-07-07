@@ -56,7 +56,10 @@
     @include screen1024 {
       display: grid;
       grid-template-columns: repeat(3, minmax(353px, 1fr));
-      // column-gap: 83px;
+    }
+    
+    @include screen1200 {
+      column-gap: 88px;
     }
   }
 
@@ -101,8 +104,9 @@
     border: transparent;
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 10px 12px;
     background-color: $background-of-event;
+    cursor: pointer;
   }
   
   &__point {

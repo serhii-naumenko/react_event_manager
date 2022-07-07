@@ -24,10 +24,19 @@ const events: Occasion[] = [
 
 interface InitialState {
   events: Occasion[],
+  visibleEvents: Occasion[] | [],
+  chosenEvent: Occasion | {},
   chosenId: number,
+  isChosenPublished: boolean,
 }
 
-const initialState: InitialState = { events, chosenId: -1 };
+const initialState: InitialState = {
+  events,
+  visibleEvents: events,
+  chosenEvent: {},
+  chosenId: -1,
+  isChosenPublished: false,
+};
 
 const occasionReducer = createSlice({
   name: 'occasion',
@@ -37,6 +46,34 @@ const occasionReducer = createSlice({
       state.events.push(action.payload);
 
       return state;
+    },
+
+    getVisibleOccasions: (state, action) => {
+      return {
+        ...state,
+        visibleEvents: action.payload,
+      };
+    },
+
+    getchosenOccasion: (state, action) => {
+      const exactEvent = state.events
+        .find((occasion) => occasion.id === action.payload);
+
+      if (exactEvent) {
+        return {
+          ...state,
+          chosenEvent: exactEvent,
+        };
+      }
+
+      return state;
+    },
+
+    updateOcasions: (state, action) => {
+      return {
+        ...state,
+        event: action.payload,
+      };
     },
 
     // removeOccasion: (state, action) => {
@@ -69,19 +106,33 @@ const occasionReducer = createSlice({
         chosenId: action.payload,
       };
     },
+
+    choseOccasionToPublish: (state, action) => {
+      return {
+        ...state,
+        isChosenPublished: action.payload,
+      };
+    },
   },
 });
 
 export const selectors = {
-  loadEvents: (state: InitialState) => state.events,
+  loadedOccasions: (state: InitialState) => state.events,
+  getVisibleOccasons: (state: InitialState) => state.visibleEvents,
+  getChosenOccasion: (state: InitialState) => state.chosenEvent,
   getChosenId: (state: InitialState) => state.chosenId,
+  getChosenOccasionsPublished: (state: InitialState) => state.isChosenPublished,
 };
 
 export const {
   addOccasion,
+  getVisibleOccasions,
+  getchosenOccasion,
+  updateOcasions,
   removeOccasion,
-  changeIsPublishedOccasion,
   chooseIdOccasion,
+  choseOccasionToPublish,
+  changeIsPublishedOccasion,
 } = occasionReducer.actions;
 
 export const { reducer } = occasionReducer;

@@ -3,3 +3,9 @@
     @content;
   }
 }
+
+@mixin screen1200 {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}

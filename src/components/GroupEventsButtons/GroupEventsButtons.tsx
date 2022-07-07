@@ -4,60 +4,64 @@ import classNames from 'classnames';
 import './GroupEventsButtons.scss';
 import ellipsis from '../../images/points.svg';
 import plus from '../../images/plus.svg';
-// import { Occasion } from '../../OccasionType';
 import { CorrectWindow } from '../CorrectWindow';
-import { chooseIdOccasion, selectors } from '../../redux/reduser';
+import {
+  chooseIdOccasion,
+  choseOccasionToPublish,
+  getVisibleOccasions,
+  selectors,
+} from '../../redux/reduser';
+import { Occasion } from '../../OccasionType';
 
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const GroupEventsButtons: React.FC = () => {
-  const allEvents = useSelector(selectors.loadEvents);
+  const allEvents = useSelector(selectors.loadedOccasions);
   const chosenId = useSelector(selectors.getChosenId);
-  const [isPublishedList, setIsPublishedList] = useState(false);
-  const [visibleEvents, setVisibleEvents] = useState(allEvents);
-  // const [idToPublishMenu, setidToPublishMenu] = useState(-1);
+  const chosenEvent = useSelector(selectors.getChosenOccasion);
+  const visibleEvents = useSelector(selectors.getVisibleOccasons);
+  const isPublishList = useSelector(selectors.getChosenOccasionsPublished);
   const dispatch = useDispatch();
-  // const [isRedactorHidden, setIsRedactorHidden] = useState(true);
+  const [countMenu, setCountMenu] = useState(0);
+  const [prevChosenId, setPrevChosenId] = useState(-2);
   // const printDate = new Date(Date.UTC(2022, 6, 5, 23, 30));
-  // const printDate = new Date().toLocaleString('en-US', { timeZone: 'UTC' });
+  const printDate = new Date().toLocaleString('en-US', { timeZone: 'UTC' });
 
   // eslint-disable-next-line no-console
-  // console.log(printDate);
+  console.log(printDate);
 
   const handlerPrintPublish = useCallback(() => {
-    const choiceOfPublic = chosenId;
+    const choiceOfPublic = isPublishList;
     const eventsToPrint = allEvents
       .filter((visEvent) => visEvent.isPublished === !choiceOfPublic);
 
-    setIsPublishedList(!choiceOfPublic);
-    setVisibleEvents(eventsToPrint);
-  }, [isPublishedList, allEvents]);
+    dispatch(choseOccasionToPublish(!choiceOfPublic));
+    dispatch(getVisibleOccasions(eventsToPrint));
+    setCountMenu(0);
+  }, [isPublishList, allEvents, visibleEvents]);
 
   const handlerOpenMenu = (idOfEvent: number) => {
-    // setidToPublishMenu(idOfEvent);
+    const exactEvent = chosenEvent;
+    const count = countMenu;
+    const prevChoice = prevChosenId;
+
+    if (count === 1 && prevChoice === idOfEvent) {
+      setCountMenu(0);
+    } else {
+      setCountMenu(1);
+    }
+
+    if ('isPublished' in exactEvent) {
+      if (exactEvent.isPublished) {
+        dispatch(choseOccasionToPublish(false));
+      } else {
+        dispatch(choseOccasionToPublish(true));
+      }
+    }
+
     dispatch(chooseIdOccasion(idOfEvent));
-
-    // eslint-disable-next-line no-console
-    console.log(idOfEvent);
+    setPrevChosenId(idOfEvent);
   };
-
-  // const handlerChangePublishPropety = useCallback((idOfEvent) => {
-  //   const bringToPublished = events.find((oneEvent) => oneEvent.id === idOfEvent);
-  //   const changeMenuPublished = menuPublished;
-
-  //   if (bringToPublished) {
-  //     bringToPublished.isPublished = !bringToPublished.isPublished;
-
-  //     const eventsToPrint = events
-  //       .filter((visEvent) => visEvent.isPublished === !bringToPublished.isPublished);
-
-  //     setVisibleEvents(eventsToPrint);
-  //     setMenuPublished(!changeMenuPublished);
-  //   }
-
-  //   // eslint-disable-next-line no-console
-  //   console.log(events);
-  // }, [visibleEvents]);
 
   return (
     <div className="GroupEventsButtons">
@@ -68,7 +72,7 @@ export const GroupEventsButtons: React.FC = () => {
             className={classNames(
               'GroupEventsButtons__switch-button',
               {
-                'GroupEventsButtons__switch-button-isActive': isPublishedList,
+                'GroupEventsButtons__switch-button-isActive': isPublishList,
               },
             )}
             onClick={handlerPrintPublish}
@@ -82,7 +86,7 @@ export const GroupEventsButtons: React.FC = () => {
             className={classNames(
               'GroupEventsButtons__switch-button',
               {
-                'GroupEventsButtons__switch-button-isActive': !isPublishedList,
+                'GroupEventsButtons__switch-button-isActive': !isPublishList,
               },
             )}
             onClick={handlerPrintPublish}
@@ -100,7 +104,7 @@ export const GroupEventsButtons: React.FC = () => {
       </button>
 
       <ul className="GroupEventsButtons__list">
-        {visibleEvents.map((oneEvent) => (
+        {visibleEvents.map((oneEvent: Occasion) => (
           <li
             className="GroupEventsButtons__item"
             key={oneEvent.id}
@@ -128,9 +132,11 @@ export const GroupEventsButtons: React.FC = () => {
                 </p>
               </div>
             </div>
-            {(chosenId === oneEvent.id) && (
-              <CorrectWindow />
-            )}
+            {(chosenId === oneEvent.id)
+              && countMenu === 1
+              && (
+                <CorrectWindow />
+              )}
           </li>
         ))}
       </ul>
