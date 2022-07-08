@@ -16,6 +16,7 @@
     flex-grow: 1;
     align-items: center;
     background-color: $main-background;
+    z-index: 1;
     
     &:first-child {
       border: 2px solid #CECECE;

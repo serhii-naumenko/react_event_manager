@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Occasion } from '../OccasionType';
 
-const events: Occasion[] = [
+const eventsStart: Occasion[] = [
   {
     id: 0,
     title: 'Lorem ipsum dolor sit amet asdfafd',
@@ -11,13 +11,13 @@ const events: Occasion[] = [
   {
     id: 1,
     title: 'Lorem ipsum dolor sit amet 2222',
-    time: '2022-06-27T07:07:09.350Z',
+    time: '2022-06-27T10:07:09.350Z',
     isPublished: false,
   },
   {
     id: 2,
     title: 'Lorem ipsum dolor sit amet 3333',
-    time: '2022-08-27T07:07:10.350Z',
+    time: '2022-08-27T23:07:10.350Z',
     isPublished: false,
   },
 ];
@@ -27,27 +27,39 @@ interface InitialState {
   visibleEvents: Occasion[] | [],
   chosenEvent: Occasion | {},
   chosenId: number,
-  isChosenPublished: boolean,
+  isChosenModePublish: boolean,
+  nameOfTimezone: string,
+  isAddDisabled: boolean,
+  isAddForm: boolean,
+  isCorrectForm: boolean,
+  infoToCorrectForm: {
+    title: string,
+    date: string,
+    time: string,
+  },
 }
 
 const initialState: InitialState = {
-  events,
-  visibleEvents: events,
+  events: [...eventsStart],
+  visibleEvents: [],
   chosenEvent: {},
   chosenId: -1,
-  isChosenPublished: false,
+  isChosenModePublish: false,
+  nameOfTimezone: 'UTC',
+  isAddDisabled: false,
+  isAddForm: false,
+  isCorrectForm: false,
+  infoToCorrectForm: {
+    title: '',
+    date: '',
+    time: '',
+  },
 };
 
 const occasionReducer = createSlice({
   name: 'occasion',
   initialState,
   reducers: {
-    addOccasion: (state, action) => {
-      state.events.push(action.payload);
-
-      return state;
-    },
-
     getVisibleOccasions: (state, action) => {
       return {
         ...state,
@@ -55,40 +67,28 @@ const occasionReducer = createSlice({
       };
     },
 
-    getchosenOccasion: (state, action) => {
-      const exactEvent = state.events
-        .find((occasion) => occasion.id === action.payload);
-
-      if (exactEvent) {
-        return {
-          ...state,
-          chosenEvent: exactEvent,
-        };
-      }
-
-      return state;
+    setchosenOccasion: (state, action) => {
+      return {
+        ...state,
+        chosenEvent: action.payload,
+      };
     },
 
     updateOcasions: (state, action) => {
       return {
         ...state,
-        event: action.payload,
+        events: action.payload,
       };
     },
 
-    // removeOccasion: (state, action) => {
-    //   return {
-    //     ...state,
-    //     events: state.events.filter((occasion) => occasion.id !== action.payload),
-    //   };
-    // },
     removeOccasion: (state, action) => {
-      state.events.filter((occasion) => occasion.id !== action.payload);
-
-      return state;
+      return {
+        ...state,
+        events: state.events.filter((occasion) => occasion.id !== action.payload),
+      };
     },
 
-    changeIsPublishedOccasion: (state, action) => {
+    toggleIsPublishedProperty: (state, action) => {
       const exactEvent = state.events.find((occasion) => {
         return occasion.id === action.payload;
       });
@@ -107,10 +107,45 @@ const occasionReducer = createSlice({
       };
     },
 
-    choseOccasionToPublish: (state, action) => {
+    changeModePublishMenu: (state, action) => {
       return {
         ...state,
-        isChosenPublished: action.payload,
+        isChosenModePublish: action.payload,
+      };
+    },
+
+    setTimezone: (state, action) => {
+      return {
+        ...state,
+        nameOfTimezone: action.payload,
+      };
+    },
+
+    changeDisabledAdd: (state, action) => {
+      return {
+        ...state,
+        isAddDisabled: action.payload,
+      };
+    },
+
+    changeIsAddForm: (state, action) => {
+      return {
+        ...state,
+        isAddForm: action.payload,
+      };
+    },
+
+    changeIsCorrectForm: (state, action) => {
+      return {
+        ...state,
+        isCorrectForm: action.payload,
+      };
+    },
+
+    setInfoToForm: (state, action) => {
+      return {
+        ...state,
+        infoToCorrectForm: action.payload,
       };
     },
   },
@@ -121,18 +156,27 @@ export const selectors = {
   getVisibleOccasons: (state: InitialState) => state.visibleEvents,
   getChosenOccasion: (state: InitialState) => state.chosenEvent,
   getChosenId: (state: InitialState) => state.chosenId,
-  getChosenOccasionsPublished: (state: InitialState) => state.isChosenPublished,
+  getModePublishMenu: (state: InitialState) => state.isChosenModePublish,
+  getTimezone: (state: InitialState) => state.nameOfTimezone,
+  getIsDisabledAdd: (state: InitialState) => state.isAddDisabled,
+  getIsAddForm: (state: InitialState) => state.isAddForm,
+  getIsCorrectForm: (state: InitialState) => state.isCorrectForm,
+  getInfoToCorrect: (state: InitialState) => state.infoToCorrectForm,
 };
 
 export const {
-  addOccasion,
   getVisibleOccasions,
-  getchosenOccasion,
+  setchosenOccasion,
   updateOcasions,
   removeOccasion,
   chooseIdOccasion,
-  choseOccasionToPublish,
-  changeIsPublishedOccasion,
+  toggleIsPublishedProperty,
+  changeModePublishMenu,
+  setTimezone,
+  changeDisabledAdd,
+  changeIsAddForm,
+  changeIsCorrectForm,
+  setInfoToForm,
 } = occasionReducer.actions;
 
 export const { reducer } = occasionReducer;

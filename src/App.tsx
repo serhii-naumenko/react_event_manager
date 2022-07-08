@@ -1,24 +1,31 @@
 import React, { useCallback, useState } from 'react';
 import './App.scss';
+import { useDispatch, useSelector } from 'react-redux';
 import { GroupEventsButtons } from './components/GroupEventsButtons';
+import { UpdaterEvents } from './components/UpdaterEvents';
 import picLogo from './images/logo.svg';
 import picArrow from './images/arrow.svg';
 import { response } from './api';
+import { selectors, setTimezone } from './redux/reduser';
 
 export const App: React.FC = () => {
-  const [nameOfTimeZone, setNameOfTimeZone] = useState('choose a time zone');
+  const nameTimezone = useSelector(selectors.getTimezone);
+  const allEvents = useSelector(selectors.loadedOccasions);
+  const openAddForm = useSelector(selectors.getIsAddForm);
+  const openCorrectForm = useSelector(selectors.getIsCorrectForm);
   const [isChosen, setIsChosen] = useState(true);
+  const dispatch = useDispatch();
 
   const handlerHiddenSelector = useCallback(() => {
     const openSelector = isChosen;
 
     setIsChosen(!openSelector);
-  }, [isChosen]);
+  }, [isChosen, allEvents]);
 
   const handlerTimeZones = useCallback((timeZone) => {
-    setNameOfTimeZone(timeZone);
+    dispatch(setTimezone(timeZone));
     setIsChosen(true);
-  }, [nameOfTimeZone]);
+  }, [nameTimezone, allEvents]);
 
   return (
     <div className="App">
@@ -41,7 +48,7 @@ export const App: React.FC = () => {
                 onClick={handlerHiddenSelector}
               >
                 <img src={picArrow} alt="pointer on select" className="App__choice-image" />
-                {nameOfTimeZone}
+                {nameTimezone}
               </button>
               {response.map((elementOfResponse) => (
                 <button
@@ -59,6 +66,8 @@ export const App: React.FC = () => {
         </div>
       </div>
       <GroupEventsButtons />
+      {openAddForm && <UpdaterEvents />}
+      {openCorrectForm && <UpdaterEvents />}
     </div>
   );
 };

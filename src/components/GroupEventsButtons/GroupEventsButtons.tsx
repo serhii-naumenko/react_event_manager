@@ -1,67 +1,85 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
+import moment from 'moment-timezone';
 import './GroupEventsButtons.scss';
 import ellipsis from '../../images/points.svg';
 import plus from '../../images/plus.svg';
 import { CorrectWindow } from '../CorrectWindow';
 import {
+  changeDisabledAdd,
+  changeIsAddForm,
+  changeModePublishMenu,
   chooseIdOccasion,
-  choseOccasionToPublish,
   getVisibleOccasions,
   selectors,
+  setchosenOccasion,
 } from '../../redux/reduser';
 import { Occasion } from '../../OccasionType';
-
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export const GroupEventsButtons: React.FC = () => {
   const allEvents = useSelector(selectors.loadedOccasions);
   const chosenId = useSelector(selectors.getChosenId);
   const chosenEvent = useSelector(selectors.getChosenOccasion);
   const visibleEvents = useSelector(selectors.getVisibleOccasons);
-  const isPublishList = useSelector(selectors.getChosenOccasionsPublished);
+  const isPublishList = useSelector(selectors.getModePublishMenu);
+  const nameTimezone = useSelector(selectors.getTimezone);
+  const isAddDisabled = useSelector(selectors.getIsDisabledAdd);
   const dispatch = useDispatch();
   const [countMenu, setCountMenu] = useState(0);
   const [prevChosenId, setPrevChosenId] = useState(-2);
-  // const printDate = new Date(Date.UTC(2022, 6, 5, 23, 30));
-  const printDate = new Date().toLocaleString('en-US', { timeZone: 'UTC' });
+  const format = 'hh:mm a - DD MMM YYYY';
 
-  // eslint-disable-next-line no-console
-  console.log(printDate);
+  useEffect(() => {
+    const eventsToPrint = allEvents
+      .filter((visEvent) => visEvent.isPublished === isPublishList);
+
+    dispatch(getVisibleOccasions(eventsToPrint));
+  }, []);
 
   const handlerPrintPublish = useCallback(() => {
     const choiceOfPublic = isPublishList;
-    const eventsToPrint = allEvents
+    const eventsToPublic = allEvents
       .filter((visEvent) => visEvent.isPublished === !choiceOfPublic);
 
-    dispatch(choseOccasionToPublish(!choiceOfPublic));
-    dispatch(getVisibleOccasions(eventsToPrint));
+    dispatch(changeModePublishMenu(!choiceOfPublic));
+    dispatch(getVisibleOccasions(eventsToPublic));
     setCountMenu(0);
-  }, [isPublishList, allEvents, visibleEvents]);
+  }, [isPublishList, allEvents]);
 
-  const handlerOpenMenu = (idOfEvent: number) => {
-    const exactEvent = chosenEvent;
+  const handlerOpenMenu = useCallback((idOfEvent: number) => {
+    const loadedEvents = allEvents;
     const count = countMenu;
     const prevChoice = prevChosenId;
 
+    const exactEvent = loadedEvents
+      .find((oneEvent) => oneEvent.id === idOfEvent);
+
     if (count === 1 && prevChoice === idOfEvent) {
       setCountMenu(0);
+      dispatch(changeDisabledAdd(false));
     } else {
       setCountMenu(1);
+      dispatch(changeDisabledAdd(true));
     }
 
-    if ('isPublished' in exactEvent) {
+    if (exactEvent) {
       if (exactEvent.isPublished) {
-        dispatch(choseOccasionToPublish(false));
+        dispatch(changeModePublishMenu(true));
       } else {
-        dispatch(choseOccasionToPublish(true));
+        dispatch(changeModePublishMenu(false));
       }
     }
 
     dispatch(chooseIdOccasion(idOfEvent));
+    dispatch(setchosenOccasion(exactEvent));
     setPrevChosenId(idOfEvent);
-  };
+  }, [chosenEvent, countMenu, prevChosenId, allEvents]);
+
+  const openForm = useCallback(() => {
+    dispatch(changeIsAddForm(true));
+    dispatch(changeDisabledAdd(true));
+  }, [isAddDisabled]);
 
   return (
     <div className="GroupEventsButtons">
@@ -96,8 +114,15 @@ export const GroupEventsButtons: React.FC = () => {
         </div>
       </div>
       <button
-        className="GroupEventsButtons__add-button"
+        className={classNames(
+          'GroupEventsButtons__add-button',
+          {
+            'GroupEventsButtons__add-button--disabled': isAddDisabled,
+          },
+        )}
         type="button"
+        disabled={isAddDisabled}
+        onClick={openForm}
       >
         <img src={plus} alt="plus" className="GroupEventsButtons__plus" />
         Add Event
@@ -127,8 +152,8 @@ export const GroupEventsButtons: React.FC = () => {
                   />
                 </button>
                 <p className="GroupEventsButtons__time">
-                  {`${oneEvent.time.slice(11, 16)} am - ${oneEvent.time.slice(8, 10)}
-                  ${months[+oneEvent.time.slice(5, 7)]} ${oneEvent.time.slice(0, 4)}`}
+                  {moment(`${oneEvent.time}`, 'YYYY-MM-DDTHH:mm.ss.350Z')
+                    .tz(`${nameTimezone}`).format(`${format}`)}
                 </p>
               </div>
             </div>

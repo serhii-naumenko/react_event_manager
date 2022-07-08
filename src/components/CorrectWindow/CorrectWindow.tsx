@@ -5,17 +5,20 @@ import pencil from '../../images/pencil.svg';
 import cloud from '../../images/cloud.svg';
 import can from '../../images/can.svg';
 import {
-  changeIsPublishedOccasion,
+  changeDisabledAdd,
+  changeIsCorrectForm,
   chooseIdOccasion,
   getVisibleOccasions,
   selectors,
+  setInfoToForm,
+  toggleIsPublishedProperty,
   updateOcasions,
 } from '../../redux/reduser';
 
 export const CorrectWindow: React.FC = () => {
   const idOfEvent = useSelector(selectors.getChosenId);
   const loadedEvents = useSelector(selectors.loadedOccasions);
-  const choosenToPublish = useSelector(selectors.getChosenOccasionsPublished);
+  const choosenToPublish = useSelector(selectors.getModePublishMenu);
   const chosenEvent = useSelector(selectors.getChosenOccasion);
   const visibleEvents = useSelector(selectors.getVisibleOccasons);
   const dispatch = useDispatch();
@@ -23,20 +26,29 @@ export const CorrectWindow: React.FC = () => {
   const handlerChangePublished = useCallback(() => {
     const chosenIdEvent = idOfEvent;
     const allEvents = loadedEvents;
-    const exactEvent = chosenEvent;
     const newEventsToPrint = visibleEvents.filter((visEvent) => visEvent.id !== chosenIdEvent);
 
-    if ('isPublished' in exactEvent) {
-      if (exactEvent.isPublished) {
-        allEvents[chosenIdEvent].isPublished = false;
-      } else {
-        allEvents[chosenIdEvent].isPublished = true;
-      }
-    }
+    dispatch(toggleIsPublishedProperty(chosenIdEvent));
 
     dispatch(getVisibleOccasions(newEventsToPrint));
     dispatch(updateOcasions(allEvents));
-    dispatch(changeIsPublishedOccasion(chosenIdEvent));
+    dispatch(toggleIsPublishedProperty(chosenIdEvent));
+    dispatch(chooseIdOccasion(-1));
+    dispatch(changeDisabledAdd(false));
+  }, [idOfEvent, loadedEvents, chosenEvent]);
+
+  const correctEvent = useCallback(() => {
+    if ('title' in chosenEvent) {
+      const infoToForm = {
+        title: chosenEvent.title,
+        date: chosenEvent.time.slice(0, 10),
+        time: chosenEvent.time.slice(11, 19),
+      };
+
+      dispatch(setInfoToForm(infoToForm));
+    }
+
+    dispatch(changeIsCorrectForm(true));
     dispatch(chooseIdOccasion(-1));
   }, [idOfEvent, loadedEvents, chosenEvent]);
 
@@ -45,6 +57,7 @@ export const CorrectWindow: React.FC = () => {
       <button
         type="button"
         className="CorrectWindow__window-section"
+        onClick={correctEvent}
       >
         <img
           src={pencil}
