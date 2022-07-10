@@ -5,19 +5,19 @@ const eventsStart: Occasion[] = [
   {
     id: 0,
     title: 'Lorem ipsum dolor sit amet asdfafd',
-    time: '2022-04-27T07:07:08.350Z',
+    time: '2022-04-27T07:07:08.+0000Z',
     isPublished: false,
   },
   {
     id: 1,
     title: 'Lorem ipsum dolor sit amet 2222',
-    time: '2022-06-27T10:07:09.350Z',
+    time: '2022-06-27T10:07:09.+0000Z',
     isPublished: false,
   },
   {
     id: 2,
     title: 'Lorem ipsum dolor sit amet 3333',
-    time: '2022-08-27T23:07:10.350Z',
+    time: '2022-08-27T23:07:10.+0000Z',
     isPublished: false,
   },
 ];
@@ -37,6 +37,7 @@ interface InitialState {
     date: string,
     time: string,
   },
+  countMenu: number,
 }
 
 const initialState: InitialState = {
@@ -51,9 +52,10 @@ const initialState: InitialState = {
   isCorrectForm: false,
   infoToCorrectForm: {
     title: '',
-    date: '',
-    time: '',
+    date: '2022-01-01',
+    time: '00:00:00',
   },
+  countMenu: 0,
 };
 
 const occasionReducer = createSlice({
@@ -148,6 +150,13 @@ const occasionReducer = createSlice({
         infoToCorrectForm: action.payload,
       };
     },
+
+    setCountMenu: (state, action) => {
+      return {
+        ...state,
+        countMenu: action.payload,
+      };
+    },
   },
 });
 
@@ -162,6 +171,7 @@ export const selectors = {
   getIsAddForm: (state: InitialState) => state.isAddForm,
   getIsCorrectForm: (state: InitialState) => state.isCorrectForm,
   getInfoToCorrect: (state: InitialState) => state.infoToCorrectForm,
+  getCountMenu: (state: InitialState) => state.countMenu,
 };
 
 export const {
@@ -177,6 +187,7 @@ export const {
   changeIsAddForm,
   changeIsCorrectForm,
   setInfoToForm,
+  setCountMenu,
 } = occasionReducer.actions;
 
 export const { reducer } = occasionReducer;

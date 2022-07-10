@@ -9,6 +9,8 @@ import {
   changeModePublishMenu,
   getVisibleOccasions,
   selectors,
+  setCountMenu,
+  setInfoToForm,
   updateOcasions,
 } from '../../redux/reduser';
 import './UpdaterEvents.scss';
@@ -38,8 +40,8 @@ export const UpdaterEvents: React.FC = () => {
         {
           id: eventToCorrect.id,
           title: descriptionEvent,
-          time: moment(`${dateEvent}T${timeEvent}z`, 'YYYY-MM-DDTHH:mm.ss.350Z')
-            .tz(`${nameTimezone}`).format('YYYY-MM-DDTHH:mm.ss.350Z'),
+          time: moment.tz(`${dateEvent} ${timeEvent}`, 'YYYY-MM-DDTHH:mm.ss.Z', `${nameTimezone}`)
+            .utc().format('YYYY-MM-DDTHH:mm:ss.ZZ'),
           isPublished: false,
         },
         ...allEvents.filter((oneEvent) => oneEvent.id !== eventToCorrect.id),
@@ -47,12 +49,14 @@ export const UpdaterEvents: React.FC = () => {
     }
 
     if (openAddForm) {
+      const date = moment.tz(`${dateEvent} ${timeEvent}`, 'YYYY-MM-DDTHH:mm.ss.Z', `${nameTimezone}`)
+        .utc().format('YYYY-MM-DDTHH:mm:ss.ZZ');
+
       upgradedEvents = [
         {
           id: new Date().valueOf(),
           title: descriptionEvent,
-          time: moment(`${dateEvent}T${timeEvent}z`, 'YYYY-MM-DDTHH:mm.ss.350Z')
-            .tz(`${nameTimezone}`).format('YYYY-MM-DDTHH:mm.ss.350Z'),
+          time: `${date}Z`,
           isPublished: false,
         },
         ...allEvents,
@@ -68,12 +72,24 @@ export const UpdaterEvents: React.FC = () => {
     dispatch(changeIsAddForm(false));
     dispatch(changeIsCorrectForm(false));
     dispatch(changeDisabledAdd(false));
+    dispatch(setInfoToForm({
+      title: '',
+      date: '2022-01-01',
+      time: '00:00:00',
+    }));
   }, [descriptionEvent, dateEvent, timeEvent, allEvents]);
 
   const closeForm = useCallback(() => {
     dispatch(changeIsAddForm(false));
     dispatch(changeIsCorrectForm(false));
     dispatch(changeDisabledAdd(false));
+    dispatch(changeModePublishMenu(false));
+    dispatch(setCountMenu(0));
+    dispatch(setInfoToForm({
+      title: '',
+      date: '2022-01-01',
+      time: '00:00:00',
+    }));
   }, []);
 
   return (

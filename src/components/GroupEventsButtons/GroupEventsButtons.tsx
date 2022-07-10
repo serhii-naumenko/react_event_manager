@@ -14,6 +14,7 @@ import {
   getVisibleOccasions,
   selectors,
   setchosenOccasion,
+  setCountMenu,
 } from '../../redux/reduser';
 import { Occasion } from '../../OccasionType';
 
@@ -25,8 +26,8 @@ export const GroupEventsButtons: React.FC = () => {
   const isPublishList = useSelector(selectors.getModePublishMenu);
   const nameTimezone = useSelector(selectors.getTimezone);
   const isAddDisabled = useSelector(selectors.getIsDisabledAdd);
+  const countUseMenu = useSelector(selectors.getCountMenu);
   const dispatch = useDispatch();
-  const [countMenu, setCountMenu] = useState(0);
   const [prevChosenId, setPrevChosenId] = useState(-2);
   const format = 'hh:mm a - DD MMM YYYY';
 
@@ -35,7 +36,7 @@ export const GroupEventsButtons: React.FC = () => {
       .filter((visEvent) => visEvent.isPublished === isPublishList);
 
     dispatch(getVisibleOccasions(eventsToPrint));
-  }, []);
+  }, [allEvents]);
 
   const handlerPrintPublish = useCallback(() => {
     const choiceOfPublic = isPublishList;
@@ -44,22 +45,23 @@ export const GroupEventsButtons: React.FC = () => {
 
     dispatch(changeModePublishMenu(!choiceOfPublic));
     dispatch(getVisibleOccasions(eventsToPublic));
-    setCountMenu(0);
+    dispatch(changeDisabledAdd(false));
+    dispatch(setCountMenu(0));
   }, [isPublishList, allEvents]);
 
   const handlerOpenMenu = useCallback((idOfEvent: number) => {
     const loadedEvents = allEvents;
-    const count = countMenu;
+    const count = countUseMenu;
     const prevChoice = prevChosenId;
 
     const exactEvent = loadedEvents
       .find((oneEvent) => oneEvent.id === idOfEvent);
 
     if (count === 1 && prevChoice === idOfEvent) {
-      setCountMenu(0);
+      dispatch(setCountMenu(0));
       dispatch(changeDisabledAdd(false));
     } else {
-      setCountMenu(1);
+      dispatch(setCountMenu(1));
       dispatch(changeDisabledAdd(true));
     }
 
@@ -74,7 +76,7 @@ export const GroupEventsButtons: React.FC = () => {
     dispatch(chooseIdOccasion(idOfEvent));
     dispatch(setchosenOccasion(exactEvent));
     setPrevChosenId(idOfEvent);
-  }, [chosenEvent, countMenu, prevChosenId, allEvents]);
+  }, [chosenEvent, countUseMenu, prevChosenId, allEvents]);
 
   const openForm = useCallback(() => {
     dispatch(changeIsAddForm(true));
@@ -152,13 +154,13 @@ export const GroupEventsButtons: React.FC = () => {
                   />
                 </button>
                 <p className="GroupEventsButtons__time">
-                  {moment(`${oneEvent.time}`, 'YYYY-MM-DDTHH:mm.ss.350Z')
+                  {moment.utc(`${oneEvent.time}`, 'YYYY-MM-DDTHH:mm:ss')
                     .tz(`${nameTimezone}`).format(`${format}`)}
                 </p>
               </div>
             </div>
             {(chosenId === oneEvent.id)
-              && countMenu === 1
+              && countUseMenu === 1
               && (
                 <CorrectWindow />
               )}

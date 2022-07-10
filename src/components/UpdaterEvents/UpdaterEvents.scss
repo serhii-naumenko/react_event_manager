@@ -8,16 +8,18 @@
   &__container {
     position: fixed;
     top: 0;
-    background-color: aquamarine;
     padding: 30px;
+
+    background-color: aquamarine;
     z-index: 3;
 
   }  
 
   &__title {
+    margin-bottom: 20px;
+
     @extend %mainTitle;
     text-align: center;
-    margin-bottom: 20px;
   }
 
   &__groupe-fields {
@@ -53,14 +55,17 @@
   }
 
   &__button-add {
+    padding:15px;
+    margin: 0 auto;
+
     display: block;
     height: 60px;
-    padding:15px;
+
     border-radius: 15px;
     background-color: rgb(119, 148, 203);
     color: rgb(200, 18, 18);
     font-weight: 600;
-    margin: 0 auto;
+
     cursor: pointer;
 
     &:hover {
@@ -78,9 +83,11 @@
     position: absolute;
     top: 20px;
     right: 15px;
+    padding: 0 10px;
+
     color: red;
     font-size: 30px;
-    padding: 0 10px;
+    
     border: 1px solid red;
     border-radius: 5px;
     cursor: pointer;
