@@ -1,6 +1,5 @@
 # Stack
-
-  React, Rreact-redux, React hooks, TypeScript,
+  React, React-redux, React hooks, TypeScript,
   Moment Timezone, SASS, Flex, Grid, Mediarequest, Figma, GitHub
 
 ## Task conditions

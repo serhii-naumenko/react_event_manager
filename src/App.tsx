@@ -6,7 +6,7 @@ import { UpdaterEvents } from './components/UpdaterEvents';
 import picLogo from './images/logo.svg';
 import picArrow from './images/arrow.svg';
 import { response } from './api';
-import { selectors, setTimezone } from './redux/reduser';
+import { selectors, setCountMenu, setTimezone } from './redux/reduser';
 
 export const App: React.FC = () => {
   const nameTimezone = useSelector(selectors.getTimezone);
@@ -20,6 +20,7 @@ export const App: React.FC = () => {
     const openSelector = isChosen;
 
     setIsChosen(!openSelector);
+    dispatch(setCountMenu(0));
   }, [isChosen, allEvents]);
 
   const handlerTimeZones = useCallback((timeZone) => {

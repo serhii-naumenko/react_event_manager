@@ -37,8 +37,12 @@
     border: none;
     border-radius: 61px;
 
+    cursor: pointer;
+
+    transition: 0.3s;
+
     &:hover {
-      background-color: #1553b6;
+      transform: scale(1.1);
     }
 
     @include screen1024 {
@@ -69,6 +73,12 @@
 
   &__item {
     list-style: none;
+
+    &-text {
+      @extend %main-text-event;
+      word-wrap: break-word;
+      overflow: auto;
+    }
   }
   
   &__item-main {
@@ -91,10 +101,6 @@
 
     &:last-child {
       margin-bottom: 130px;
-    }
-
-    &-text {
-      @extend %main-text-event;
     }
   }
 
@@ -132,6 +138,7 @@
     height: 69px;
     
     cursor: pointer;
+    transition: 0.3s;
 
     background: $background-button-add;
     border-radius: 57px;

@@ -67,6 +67,7 @@
     font-weight: 600;
 
     cursor: pointer;
+    transition: 0.3s;
 
     &:hover {
       background-color: rgb(150, 178, 235);
@@ -91,5 +92,11 @@
     border: 1px solid red;
     border-radius: 5px;
     cursor: pointer;
+    transition: transform 0.3s;
+
+    &:hover {
+      background-color: rgba(236, 228, 228, 0.836);
+      transform: scale(1.1);
+    }
   }
 }
