@@ -96,6 +96,7 @@
     background-color: $main-background;
     z-index: 1;
     border: 1.5px solid black;
+    transition: 0.3s;
 
     &:hover {
       background-color: rgb(228, 218, 218);

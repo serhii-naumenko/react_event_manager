@@ -122,7 +122,7 @@ export const UpdaterEvents: React.FC = () => {
                 minLength={3}
                 maxLength={80}
                 name="desc"
-                placeholder="..."
+                placeholder="max 80 symbols"
                 value={descriptionEvent}
                 onChange={(event) => setDescriptionEvent(event.target.value)}
               />

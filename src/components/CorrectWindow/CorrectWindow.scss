@@ -19,6 +19,7 @@
 
     background-color: $main-background;
     z-index: 1;
+    transition: 0.3s;
 
     &:hover {
       background-color: grey;
