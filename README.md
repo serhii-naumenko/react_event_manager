@@ -1,5 +1,4 @@
 # Stack
-
   React, React-redux, React hooks, TypeScript,
   Moment Timezone, Figma, GitHub,
   SASS, Flex, Grid, Mediarequest
