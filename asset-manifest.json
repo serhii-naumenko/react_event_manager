@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "./static/css/main.54da8a31.chunk.css",
+    "main.css": "./static/css/main.ba3a6c48.chunk.css",
     "main.js": "./static/js/main.fb1f30ca.chunk.js",
     "main.js.map": "./static/js/main.fb1f30ca.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.8c9895b1.js",
@@ -8,7 +8,7 @@
     "static/js/2.82bbde9a.chunk.js": "./static/js/2.82bbde9a.chunk.js",
     "static/js/2.82bbde9a.chunk.js.map": "./static/js/2.82bbde9a.chunk.js.map",
     "index.html": "./index.html",
-    "static/css/main.54da8a31.chunk.css.map": "./static/css/main.54da8a31.chunk.css.map",
+    "static/css/main.ba3a6c48.chunk.css.map": "./static/css/main.ba3a6c48.chunk.css.map",
     "static/js/2.82bbde9a.chunk.js.LICENSE.txt": "./static/js/2.82bbde9a.chunk.js.LICENSE.txt",
     "static/media/UpdaterEvents.scss": "./static/media/Montserrat-SemiBold.04af9a9e.ttf",
     "static/media/arrow.24e95959.svg": "./static/media/arrow.24e95959.svg",
@@ -22,7 +22,7 @@
   "entrypoints": [
     "static/js/runtime-main.8c9895b1.js",
     "static/js/2.82bbde9a.chunk.js",
-    "static/css/main.54da8a31.chunk.css",
+    "static/css/main.ba3a6c48.chunk.css",
     "static/js/main.fb1f30ca.chunk.js"
   ]
 }
