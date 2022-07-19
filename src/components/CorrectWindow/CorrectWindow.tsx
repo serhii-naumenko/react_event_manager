@@ -35,6 +35,7 @@ export const CorrectWindow: React.FC = () => {
 
     dispatch(getVisibleOccasions(newEventsToPrint));
     dispatch(updateOcasions(allEvents));
+    localStorage.setItem('events', JSON.stringify(allEvents));
     dispatch(toggleIsPublishedProperty(chosenIdEvent));
     dispatch(chooseIdOccasion(-1));
     dispatch(changeDisabledAdd(false));

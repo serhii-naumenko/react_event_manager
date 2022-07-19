@@ -1,5 +1,6 @@
 # Stack
   React, React-redux, React hooks, TypeScript,
+  localStorage,
   Moment Timezone, Figma, GitHub,
   SASS, Flex, Grid, Mediarequest
 

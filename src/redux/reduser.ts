@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Occasion } from '../OccasionType';
 
-const eventsStart: Occasion[] = [
+const eventsFromStorage = localStorage.getItem('events');
+let eventsStart: Occasion[] = [
   {
     id: 0,
     title: 'Lorem ipsum dolor sit amet asdfafd',
@@ -21,6 +22,10 @@ const eventsStart: Occasion[] = [
     isPublished: false,
   },
 ];
+
+if (eventsFromStorage !== null) {
+  eventsStart = JSON.parse(eventsFromStorage);
+}
 
 interface InitialState {
   events: Occasion[],

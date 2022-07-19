@@ -66,6 +66,7 @@ export const UpdaterEvents: React.FC = () => {
     const visibleEvents = upgradedEvents.filter((upEvent) => upEvent.isPublished === false);
 
     dispatch(updateOcasions(upgradedEvents));
+    localStorage.setItem('events', JSON.stringify(upgradedEvents));
     dispatch(changeModePublishMenu(false));
     dispatch(getVisibleOccasions(visibleEvents));
 

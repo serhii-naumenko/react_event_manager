@@ -36,6 +36,7 @@ export const GroupEventsButtons: React.FC = () => {
       .filter((visEvent) => visEvent.isPublished === isPublishList);
 
     dispatch(getVisibleOccasions(eventsToPrint));
+    localStorage.setItem('events', JSON.stringify(allEvents));
   }, [allEvents]);
 
   const handlerPrintPublish = useCallback(() => {
